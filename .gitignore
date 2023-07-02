@@ -8,3 +8,5 @@ node_modules/
 blog/public/
 
 db/dump/
+
+docker-compose.yml
