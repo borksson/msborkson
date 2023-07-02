@@ -1,0 +1,25 @@
+{
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3010",
+    "build": "next build",
+    "start": "PORT=3010 node .next/standalone/server.js"
+  },
+  "dependencies": {
+    "@chakra-ui/icons": "^2.0.19",
+    "@chakra-ui/react": "^2.7.1",
+    "@emotion/react": "^11.11.1",
+    "@emotion/styled": "^11.11.0",
+    "dotenv": "^16.3.1",
+    "framer-motion": "^10.12.17",
+    "next": "latest",
+    "react": "^18.2.0",
+    "react-code-blocks": "^0.0.9-0",
+    "react-dom": "^18.2.0",
+    "react-icons": "^4.10.1",
+    "react-markdown": "^8.0.7",
+    "react-onesignal": "^2.0.4",
+    "react-slick": "^0.29.0",
+    "slick-carousel": "^1.8.1"
+  }
+}
