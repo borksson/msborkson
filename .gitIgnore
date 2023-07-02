@@ -1,0 +1,10 @@
+api/static/
+api/api
+api/env/
+
+blog/.git_old/
+blog/.next/
+node_modules/
+blog/public/
+
+db/dump/
