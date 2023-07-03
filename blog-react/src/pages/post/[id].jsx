@@ -1,34 +1,29 @@
 import { BlogPost } from "../../components/Blog/BlogPost";
 import { Box } from "@chakra-ui/react";
+import { useParams } from "react-router-dom";
+import { useState, useEffect } from "react";
 
-import { api_url } from "../../constants/strings";
+export default function BlogPostId() {
+    const { id } = useParams();
 
-export default function BlogPostId({ post, content }) {
+    const [post, setPost] = useState({});
+    const [content, setContent] = useState("");
+
+    useEffect(() => {
+        fetch(`/api/post/${id}`)
+            .then((res) => res.json())
+            .then((data) => {
+                setPost(data);
+                fetch(`${data.contentURL}`)
+                    .then((res) => res.text())
+                    .then((data) => setContent(data));
+            });
+    }, [id]);
+
+
     return (
         <Box pt={["20%", "1%"]}>
             <BlogPost post={post} content={content}/>
         </Box>
     )
-}
-
-export async function getStaticPaths() {
-    const blogRes = await fetch(`${api_url}/api/posts/blog`)
-    const blogPosts = await blogRes.json()
-    const techRes = await fetch(`${api_url}/api/posts/tech`)
-    const techPosts = await techRes.json()
-    const allPosts = blogPosts.concat(techPosts)
-    const paths = allPosts.map((post) => ({
-        params: { id: post.id.toString() },
-    }))
-    return { paths, fallback: false }
-}
-
-export async function getStaticProps({ params }) {
-    let res = await fetch(`${api_url}/api/post/${params.id}`)
-    console.log(`${api_url}/api/post/${params.id}`)
-    const post = await res.json()
-    // TODO: fix contentURL and also just use 
-    res = await fetch(`${api_url}${post.contentURL}`)
-    const content = await res.text()
-    return { props: { post, content } }
 }

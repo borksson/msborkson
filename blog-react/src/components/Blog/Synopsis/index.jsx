@@ -9,7 +9,7 @@ export function Synopsis({ content, id }) {
         // Fade out on bottom
         <VStack alignItems={"start"} spacing={5} w="100%">
             <Markdown content={shortContent}/>
-            <Button>Read More</Button>  {/*onClick={() => router.push(`/post/${id}`)}*/}
+            <Button onClick={() => window.location.href = `/post/${id}`}>Read More</Button>
         </VStack>
     )
 }
