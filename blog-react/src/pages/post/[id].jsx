@@ -10,7 +10,7 @@ export default function BlogPostId() {
     const [content, setContent] = useState("");
 
     useEffect(() => {
-        fetch(`/api/post/${id}`)
+        fetch(`https://api.msborkson.com/api/post/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 setPost(data);

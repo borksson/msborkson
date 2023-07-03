@@ -7,11 +7,11 @@ export default function BlogPage() {
     const [posts, setPosts] = useState([]);
 
     useEffect(() => {
-        fetch(`/api/posts/${type}`)
+        fetch(`https://api.msborkson.com/api/posts/${type}`)
             .then((res) => res.json())
             .then(async (data) => {
                 for (let i = 0; i < data.length; i++) {
-                    const contentRes = await fetch(`${data[i].contentURL}`)
+                    const contentRes = await fetch(`https://api.msborkson.com${data[i].contentURL}`)
                     const content = await contentRes.text()
                     data[i].content = content
                 }

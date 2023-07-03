@@ -1,9 +1,6 @@
 import { ReactMarkdown } from "react-markdown/lib/react-markdown";
-import { Code, Heading, Text, ListItem, UnorderedList, OrderedList, Wrap, VStack, WrapItem, Image, Center, Link, useColorModeValue, theme } from "@chakra-ui/react";
+import { Heading, Text, ListItem, UnorderedList, OrderedList, Wrap, VStack, WrapItem, Image, Center, Link, useColorModeValue } from "@chakra-ui/react";
 import { ImageHolder } from "../ImageHolder";
-import { useEffect } from "react";
-// import { CodeBlock, CopyBlock } from "react-code-blocks";
-import { useState } from "react";
 import { CodeBlock, dracula } from "react-code-blocks";
 
 export function Markdown({ content }) {

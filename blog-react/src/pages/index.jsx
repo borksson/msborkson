@@ -7,14 +7,14 @@ export default function Home() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const blogRes = await fetch(`/api/posts/blog`)
+      const blogRes = await fetch(`https://api.msborkson.com/api/posts/blog`)
       const blogPosts = await blogRes.json()
-      const techRes = await fetch(`/api/posts/tech`)
+      const techRes = await fetch(`https://api.msborkson.com/api/posts/tech`)
       const techPosts = await techRes.json()
       const posts = blogPosts.concat(techPosts)
     
       for (let i = 0; i < posts.length; i++) {
-          const contentRes = await fetch(`${posts[i].contentURL}`)
+          const contentRes = await fetch(`https://api.msborkson.com${posts[i].contentURL}`)
           const content = await contentRes.text()
           posts[i].content = content
       }

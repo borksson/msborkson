@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
 	log "github.com/sirupsen/logrus"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -102,6 +103,8 @@ func main() {
 	log.Info("Starting server...")
 
 	r := gin.Default()
+
+	r.Use(cors.Default())
 
 	r.GET("/", func(c *gin.Context) {
 		// Hello world
