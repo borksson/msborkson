@@ -7,6 +7,9 @@ blog/.next/
 node_modules/
 blog/public/
 
+blog-react/public
+
+
 db/dump/
 
 docker-compose.yml
