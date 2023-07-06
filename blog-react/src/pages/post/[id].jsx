@@ -14,7 +14,7 @@ export default function BlogPostId() {
             .then((res) => res.json())
             .then((data) => {
                 setPost(data);
-                fetch(`${data.contentURL}`)
+                fetch(`https://api.msborkson.com${data.contentURL}`)
                     .then((res) => res.text())
                     .then((data) => setContent(data));
             });
