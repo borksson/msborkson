@@ -13,3 +13,7 @@ blog-react/public
 db/dump/
 
 docker-compose*
+
+mongodb_data/
+
+*.env

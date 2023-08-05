@@ -14,6 +14,15 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
+// func validateApiKey(c *gin.Context) {
+// 	APIKey := c.GetHeader("X-API-Key")
+// 	if APIKey != os.Getenv("API_KEY") {
+// 		c.AbortWithStatusJSON(401, gin.H{
+// 			"message": "Invalid API key.",
+// 		})
+// 	}
+// }
+
 type Post struct {
 	Title string `bson:"title" json:"title"`
 	Date string `bson:"date" json:"date"`
@@ -80,10 +89,12 @@ func init() {
 
 func main() {
 	log.Info("Loading environment variables...")
-	port := os.Getenv("PORT")
-	connectionUri := os.Getenv("CONNECTION_URI")
+	port := os.Getenv("API_PORT")
+	connectionUri := os.Getenv("DB_CONNECTION_URL")
 
 	log.Info("Connecting to database...")
+	log.Info("Connection URI: " + connectionUri)
+	log.Info("Port: " + port)
 
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(connectionUri).SetServerAPIOptions(serverAPI)
