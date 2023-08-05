@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def hello_world():
-    return 'Hello, World!'
+    return 'Hello, World from gpt4all!'
 
 def clean_text(text):
     # Remove leading special characters

@@ -152,6 +152,7 @@ func main() {
 			static.GET("/posts/:filename", getPost)
 		}
 
+		// Gopher task service
 		gopher := api.Group("/gopher")
 		{
 			gopher.GET("/", validateApiKey, func(c *gin.Context) {
@@ -202,6 +203,58 @@ func main() {
 					})
 				} else {
 					log.Fatal(gopher_response.Status)
+					c.JSON(500, gin.H{
+						"message": "Internal server error.",
+					})
+				}
+			})
+		}
+
+		// Gpt4All service
+		gpt4all := api.Group("/gpt4all")
+		{
+			gpt4all.GET("/", validateApiKey, func(c *gin.Context) {
+				log.Info("Getting gpt4all...")
+				gpt4all_url := os.Getenv("GPT4ALL_URL")
+				log.Debug("Gpt4all URL: " + gpt4all_url)
+				gpt4all_response, err := http.Get(gpt4all_url)
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer gpt4all_response.Body.Close()
+
+				if gpt4all_response.StatusCode == http.StatusOK {
+					bodyBytes, err := io.ReadAll(gpt4all_response.Body)
+					if err != nil {
+						log.Fatal(err)
+					}
+					bodyString := string(bodyBytes)
+					c.JSON(200, gin.H{
+						"message": bodyString,
+					})
+				} else {
+					log.Fatal(gpt4all_response.Status)
+					c.JSON(500, gin.H{
+						"message": "Internal server error.",
+					})
+				}
+			})
+
+			gpt4all.POST("/", validateApiKey, func(c *gin.Context) {
+				log.Info("Generating response...")
+				gpt4all_url := os.Getenv("GPT4ALL_URL")+"/generate"
+				log.Debug("Gpt4all URL: " + gpt4all_url)
+				gpt4all_response, err := http.Post(gpt4all_url, "application/json", c.Request.Body)
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer gpt4all_response.Body.Close()
+
+				if gpt4all_response.StatusCode == http.StatusOK {
+					c.Header("Content-Type", "application/json")
+					io.Copy(c.Writer, gpt4all_response.Body)
+				} else {
+					log.Fatal(gpt4all_response.Status)
 					c.JSON(500, gin.H{
 						"message": "Internal server error.",
 					})
