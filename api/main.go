@@ -2,12 +2,12 @@ package main
 
 import (
 	"context"
-	"os"
-	"net/http"
 	"io"
+	"net/http"
+	"os"
 
-	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
 	log "github.com/sirupsen/logrus"
 
 	"go.mongodb.org/mongo-driver/bson"
@@ -180,7 +180,33 @@ func main() {
 					})
 				}
 			})
-			
+
+			gopher.POST("/", validateApiKey, func(c *gin.Context) {
+				log.Info("Add jobs...")
+				gopher_url := os.Getenv("GOPHER_URL")+"/addTasks"
+				log.Debug("Gopher URL: " + gopher_url)
+				gopher_response, err := http.Post(gopher_url, "application/json", c.Request.Body)
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer gopher_response.Body.Close()
+
+				if gopher_response.StatusCode == http.StatusOK {
+					bodyBytes, err := io.ReadAll(gopher_response.Body)
+					if err != nil {
+						log.Fatal(err)
+					}
+					bodyString := string(bodyBytes)
+					c.JSON(200, gin.H{
+						"message": bodyString,
+					})
+				} else {
+					log.Fatal(gopher_response.Status)
+					c.JSON(500, gin.H{
+						"message": "Internal server error.",
+					})
+				}
+			})
 		}
 	}
 
