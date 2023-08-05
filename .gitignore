@@ -17,3 +17,6 @@ docker-compose*
 mongodb_data/
 
 *.env
+
+gpt4all/models/
+gpt4all/env/
