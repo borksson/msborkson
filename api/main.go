@@ -3,6 +3,8 @@ package main
 import (
 	"context"
 	"os"
+	"net/http"
+	"io"
 
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
@@ -14,14 +16,16 @@ import (
 	"go.mongodb.org/mongo-driver/mongo/options"
 )
 
-// func validateApiKey(c *gin.Context) {
-// 	APIKey := c.GetHeader("X-API-Key")
-// 	if APIKey != os.Getenv("API_KEY") {
-// 		c.AbortWithStatusJSON(401, gin.H{
-// 			"message": "Invalid API key.",
-// 		})
-// 	}
-// }
+func validateApiKey(c *gin.Context) {
+	log.Info("Validating API key...")
+	APIKey := c.GetHeader("X-API-Key")
+	log.Debug("API key: " + APIKey)
+	if APIKey != os.Getenv("API_KEY") {
+		c.AbortWithStatusJSON(401, gin.H{
+			"message": "Invalid API key.",
+		})
+	}
+}
 
 type Post struct {
 	Title string `bson:"title" json:"title"`
@@ -89,12 +93,10 @@ func init() {
 
 func main() {
 	log.Info("Loading environment variables...")
-	port := os.Getenv("API_PORT")
-	connectionUri := os.Getenv("DB_CONNECTION_URL")
+	port := os.Getenv("PORT")
+	connectionUri := os.Getenv("CONNECTION_URI")
 
 	log.Info("Connecting to database...")
-	log.Info("Connection URI: " + connectionUri)
-	log.Info("Port: " + port)
 
 	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
 	opts := options.Client().ApplyURI(connectionUri).SetServerAPIOptions(serverAPI)
@@ -148,6 +150,37 @@ func main() {
 		{
 			static.GET("/images/:filename", getImage)
 			static.GET("/posts/:filename", getPost)
+		}
+
+		gopher := api.Group("/gopher")
+		{
+			gopher.GET("/", validateApiKey, func(c *gin.Context) {
+				log.Info("Getting gopher...")
+				gopher_url := os.Getenv("GOPHER_URL")
+				log.Debug("Gopher URL: " + gopher_url)
+				gopher_response, err := http.Get(gopher_url)
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer gopher_response.Body.Close()
+
+				if gopher_response.StatusCode == http.StatusOK {
+					bodyBytes, err := io.ReadAll(gopher_response.Body)
+					if err != nil {
+						log.Fatal(err)
+					}
+					bodyString := string(bodyBytes)
+					c.JSON(200, gin.H{
+						"message": bodyString,
+					})
+				} else {
+					log.Fatal(gopher_response.Status)
+					c.JSON(500, gin.H{
+						"message": "Internal server error.",
+					})
+				}
+			})
+			
 		}
 	}
 
