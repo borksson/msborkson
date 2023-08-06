@@ -117,7 +117,10 @@ func main() {
 
 	r := gin.Default()
 
-	r.Use(cors.Default())
+	config := cors.DefaultConfig()
+	config.AllowAllOrigins = true
+  
+	r.Use(cors.New(config))
 
 	r.GET("/", func(c *gin.Context) {
 		// Hello world
@@ -169,6 +172,25 @@ func main() {
 				c.JSON(200, gin.H{
 					"message": "Successfully subscribed to newsletter.",
 				})
+			})
+
+			email.GET("/", validateApiKey, func(c *gin.Context) {
+				log.Info("Getting emails...")
+				collection := client.Database("blog").Collection("emails")
+				emails, err := collection.Find(context.Background(), bson.D{})
+				if err != nil {
+					log.Fatal(err)
+				}
+				var results []bson.M
+				for emails.Next(context.Background()) {
+					var email bson.M
+					err := emails.Decode(&email)
+					if err != nil {
+						log.Fatal(err)
+					}
+					results = append(results, email)
+				}
+				c.JSON(200, results)
 			})
 		}
 

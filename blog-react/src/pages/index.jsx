@@ -1,20 +1,21 @@
 import { Flex, VStack, Box, Card, CardBody} from '@chakra-ui/react'
 import { BlogCard } from '../components/Blog/BlogCard'
 import { useState, useEffect } from 'react'
+import { api_url } from '../constants/strings'
 
 export default function Home() {
   const [ posts, setPosts ] = useState([])
 
   useEffect(() => {
     const fetchData = async () => {
-      const blogRes = await fetch(`https://api.msborkson.com/api/posts/blog`)
+      const blogRes = await fetch(`${api_url}/api/posts/blog`)
       const blogPosts = await blogRes.json()
-      const techRes = await fetch(`https://api.msborkson.com/api/posts/tech`)
+      const techRes = await fetch(`${api_url}/api/posts/tech`)
       const techPosts = await techRes.json()
       const posts = blogPosts.concat(techPosts)
     
       for (let i = 0; i < posts.length; i++) {
-          const contentRes = await fetch(`https://api.msborkson.com${posts[i].contentURL}`)
+          const contentRes = await fetch(`${api_url}${posts[i].contentURL}`)
           const content = await contentRes.text()
           posts[i].content = content
       }

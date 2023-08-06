@@ -2,6 +2,7 @@ import { BlogPost } from "../../components/Blog/BlogPost";
 import { Box } from "@chakra-ui/react";
 import { useParams } from "react-router-dom";
 import { useState, useEffect } from "react";
+import { api_url } from "../../constants/strings";
 
 export default function BlogPostId() {
     const { id } = useParams();
@@ -10,11 +11,11 @@ export default function BlogPostId() {
     const [content, setContent] = useState("");
 
     useEffect(() => {
-        fetch(`https://api.msborkson.com/api/post/${id}`)
+        fetch(`${api_url}/api/post/${id}`)
             .then((res) => res.json())
             .then((data) => {
                 setPost(data);
-                fetch(`https://api.msborkson.com${data.contentURL}`)
+                fetch(`${api_url}${data.contentURL}`)
                     .then((res) => res.text())
                     .then((data) => setContent(data));
             });

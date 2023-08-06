@@ -11,6 +11,7 @@ import {
   Flex,
 } from '@chakra-ui/react';
 import { CheckIcon } from '@chakra-ui/icons';
+import { api_url } from '../../constants/strings';
 
 export default function Simple() {
   const [email, setEmail] = useState('');
@@ -40,12 +41,19 @@ export default function Simple() {
           direction={{ base: 'column', md: 'row' }}
           as={'form'}
           spacing={'12px'}
-          onSubmit={(e) => {
+          onSubmit={async (e) => {
             e.preventDefault();
             setError(false);
             setState('submitting');
 
-            // remove this code and implement your submit logic right here
+            await fetch(`${api_url}/api/email/`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({ email: email }),
+            });
+
             setTimeout(() => {
               if (email === 'fail@example.com') {
                 setError(true);
