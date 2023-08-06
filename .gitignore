@@ -15,6 +15,7 @@ db/dump/
 docker-compose*
 
 mongodb_data/
+mongodb_data_dev/
 
 *.env
 

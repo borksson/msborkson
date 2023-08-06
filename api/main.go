@@ -152,9 +152,30 @@ func main() {
 			static.GET("/posts/:filename", getPost)
 		}
 
+		email := api.Group("/email")
+		{
+			email.POST("/", func(c *gin.Context) {
+				log.Info("Subscribing to newsletter...")
+				collection := client.Database("blog").Collection("emails")
+				var email bson.M
+				err := c.BindJSON(&email)
+				if err != nil {
+					log.Fatal(err)
+				}
+				_, err = collection.InsertOne(context.Background(), email)
+				if err != nil {
+					log.Fatal(err)
+				}
+				c.JSON(200, gin.H{
+					"message": "Successfully subscribed to newsletter.",
+				})
+			})
+		}
+
 		// Gopher task service
 		gopher := api.Group("/gopher")
 		{
+			// TODO: Make these facade functions
 			gopher.GET("/", validateApiKey, func(c *gin.Context) {
 				log.Info("Getting gopher...")
 				gopher_url := os.Getenv("GOPHER_URL")
