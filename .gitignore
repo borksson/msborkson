@@ -23,3 +23,5 @@ gpt4all/models/
 gpt4all/env/
 
 stable-diffusion/env/
+
+cloudflared.deb

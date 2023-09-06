@@ -98,8 +98,7 @@ func main() {
 
 	log.Info("Connecting to database...")
 
-	serverAPI := options.ServerAPI(options.ServerAPIVersion1)
-	opts := options.Client().ApplyURI(connectionUri).SetServerAPIOptions(serverAPI)
+	opts := options.Client().ApplyURI(connectionUri)
 
 	client, err := mongo.Connect(context.TODO(), opts)
 
