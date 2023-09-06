@@ -1,0 +1,27 @@
+# Compiled output
+/dist
+/out
+/build
+/node_modules
+
+# IDE files
+.vscode
+.idea
+*.iml
+*.ipr
+*.iws
+
+# Logs
+*.log
+
+# Environment variables
+.env
+
+# App Data
+/data
+
+# Other
+*.bak
+*.tmp
+.DS_Store
+chromedriver
