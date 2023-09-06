@@ -12,8 +12,11 @@ export class ByuWebScrapperLoadTasks extends WebScrapperLoadTasks<SchoolTask, Au
         const {By, Builder, until} = require('selenium-webdriver');
         const chrome = require('selenium-webdriver/chrome');
 
-        const service = new chrome.ServiceBuilder(process.env.CHROMEDRIVER_PATH);
-        this.authDriver = new Builder().forBrowser('chrome').setChromeService(service).build();
+        this.authDriver = new Builder()
+            .usingServer(process.env.SELENIUM_SERVER)
+            .forBrowser('chrome')
+            .setChromeOptions(new chrome.Options().headless())
+            .build();
         
         await this.authDriver.manage().setTimeouts( { implicit: 10000 } );
         
