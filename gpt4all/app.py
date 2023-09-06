@@ -19,7 +19,7 @@ def clean_text(text):
     text = text.strip()
     return text
 
-# curl -X POST -H "Content-Type: application/json" -d '{"prompt":"The capital of France is"}' http://localhost:5000/generate
+# curl -X POST -H "Content-"type": application/json" -d '{"prompt":"The capital of France is"}' http://localhost:5000/generate
 @app.route('/generate', methods=['POST'])
 def generate():
     with model.chat_session(system_template, prompt_template):

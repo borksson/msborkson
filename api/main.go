@@ -149,6 +149,33 @@ func main() {
 			c.JSON(200, getPostById(client, postId))
 		})
 
+		api.POST("/post/restore", validateApiKey, func(c *gin.Context) {
+			log.Info("Restoring post database...")
+			collection := client.Database("blog").Collection("posts")
+			err := collection.Drop(context.Background())
+			if err != nil {
+				log.Fatal(err)
+			}
+			// Get posts from body
+			var posts []Post
+			err = c.BindJSON(&posts)
+			if err != nil {
+				log.Fatal(err)
+			}
+			// Insert posts into database
+			for _, post := range posts {
+				// Add object id
+				post.Id = primitive.NewObjectID()
+				_, err = collection.InsertOne(context.Background(), post)
+				if err != nil {
+					log.Fatal(err)
+				}
+			}
+			c.JSON(200, gin.H{
+				"message": "Successfully restored post database.",
+			})
+		})
+
 		static := api.Group("/static")
 		{
 			static.GET("/images/:filename", getImage)
