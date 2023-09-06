@@ -331,6 +331,91 @@ func main() {
 				}
 			})
 		}
+
+		// TaskScript service
+		taskscript := api.Group("/taskscript")
+		{
+			taskscript.GET("/", validateApiKey, func(c *gin.Context) {
+				log.Info("Getting taskscript...")
+				taskscript_url := os.Getenv("TASKSCRIPT_URL")
+				log.Debug("Taskscript URL: " + taskscript_url)
+				taskscript_response, err := http.Get(taskscript_url)
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer taskscript_response.Body.Close()
+
+				if taskscript_response.StatusCode == http.StatusOK {
+					bodyBytes, err := io.ReadAll(taskscript_response.Body)
+					if err != nil {
+						log.Fatal(err)
+					}
+					bodyString := string(bodyBytes)
+					c.JSON(200, gin.H{
+						"message": bodyString,
+					})
+				} else {
+					log.Fatal(taskscript_response.Status)
+					c.JSON(500, gin.H{
+						"message": "Internal server error.",
+					})
+				}
+			})
+
+			taskscript.POST("/sync", validateApiKey, func(c *gin.Context) {
+				log.Info("Syncing tasks...")
+				taskscript_url := os.Getenv("TASKSCRIPT_URL")+"/sync"
+				log.Debug("Taskscript URL: " + taskscript_url)
+				taskscript_response, err := http.Post(taskscript_url, "application/json", c.Request.Body)
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer taskscript_response.Body.Close()
+
+				if taskscript_response.StatusCode == http.StatusOK {
+					bodyBytes, err := io.ReadAll(taskscript_response.Body)
+					if err != nil {
+						log.Fatal(err)
+					}
+					bodyString := string(bodyBytes)
+					c.JSON(200, gin.H{
+						"message": bodyString,
+					})
+				} else {
+					log.Fatal(taskscript_response.Status)
+					c.JSON(500, gin.H{
+						"message": "Internal server error.",
+					})
+				}
+			})
+
+			taskscript.POST("/update", validateApiKey, func(c *gin.Context) {
+				log.Info("Updating tasks...")
+				taskscript_url := os.Getenv("TASKSCRIPT_URL")+"/update"
+				log.Debug("Taskscript URL: " + taskscript_url)
+				taskscript_response, err := http.Post(taskscript_url, "application/json", c.Request.Body)
+				if err != nil {
+					log.Fatal(err)
+				}
+				defer taskscript_response.Body.Close()
+
+				if taskscript_response.StatusCode == http.StatusOK {
+					bodyBytes, err := io.ReadAll(taskscript_response.Body)
+					if err != nil {
+						log.Fatal(err)
+					}
+					bodyString := string(bodyBytes)
+					c.JSON(200, gin.H{
+						"message": bodyString,
+					})
+				} else {
+					log.Fatal(taskscript_response.Status)
+					c.JSON(500, gin.H{
+						"message": "Internal server error.",
+					})
+				}
+			})		
+		}		
 	}
 
 	r.Run(":" + port)
