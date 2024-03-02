@@ -40,7 +40,7 @@ const update = async () => {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
-            "X-Api-Key": "771b2a98-ad34-4c96-8b21-bebaa7736118"
+            "X-Api-Key": ""//SILLY MAX
         }
     });
 
