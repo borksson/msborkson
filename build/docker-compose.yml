@@ -33,7 +33,7 @@ services:
   # # server
   server:
     container_name: server
-    build: ./server
+    build: ../server
     restart: always
     environment:
       - PORT=8080
