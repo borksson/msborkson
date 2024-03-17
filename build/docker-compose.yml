@@ -1,52 +1,67 @@
 name: msborkson
 services:
-  # MongoDB
-  mongo_db:
-    container_name: mongo_db
-    image: mongo:latest
-    restart: always
-    volumes:
-      - ../apps/mongodb_data:/data/db
+  # # MongoDB
+  # mongo-db:
+  #   container_name: mongo-db
+  #   image: mongo:latest
+  #   restart: always
+  #   volumes:
+  #     - ../apps/mongodb_data:/data/db
 
-  # Postgres
-  postgres_db:
-    container_name: postgres_db
-    image: postgres:latest
-    restart: always    
-    environment:
-      - POSTGRES_PASSWORD=/run/secrets/POSTGRES_PASSWORD
-      - POSTGRES_USER=borkson
-    volumes:
-      - ../apps/postgres_data:/var/lib/postgresql/data
-    secrets:
-      - POSTGRES_PASSWORD
+  # # Postgres
+  # postgres-db:
+  #   container_name: postgres-db
+  #   image: postgres:latest
+  #   restart: always    
+  #   environment:
+  #     - POSTGRES-PASSWORD=/run/secrets/POSTGRES_PASSWORD
+  #     - POSTGRES-USER=borkson
+  #   volumes:
+  #     - ../apps/postgres_data:/var/lib/postgresql/data
+  #   secrets:
+  #     - POSTGRES_PASSWORD
 
-  # Selenium
-  chrome:
-    container_name: selenium
-    image: selenium/standalone-chrome:latest
-    restart: always
-    hostname: chrome
-    privileged: true
-    shm_size: 2g
+  # # Selenium
+  # chrome:
+  #   container_name: selenium
+  #   image: selenium/standalone-chrome:latest
+  #   restart: always
+  #   hostname: chrome
+  #   privileged: true
+  #   shm-size: 2g
 
-  # server
+  # # server
   server:
     container_name: server
     build: ./server
     restart: always
     environment:
       - PORT=8080
+      - REGISTRY_URL=http://registry-backend:8001
     ports:
       - "8080:8080"
 
   # registry
-  registry:
-    container_name: registry
-    image: registry:latest
+  registry-frontend:
+    container_name: registry-frontend
+    image: borksson/registry-frontend
     restart: always
+    ports:
+      - "5173:3000"
+
+  registry-backend:
+    container_name: registry-backend
+    image: borksson/registry-backend
+    restart: always
+    environment:
+      - PORT=8001
+    ports:
+      - "8001:8001"
+    volumes:
+      - ../secrets:/usr/src/app/secrets
+
 
 secrets:
   # Postgres
   POSTGRES_PASSWORD:
-    file: ../secrets/postgres_password.txt
+    file: ../secrets/postgres-password.txt

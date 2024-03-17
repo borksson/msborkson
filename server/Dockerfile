@@ -7,5 +7,6 @@ RUN go mod download
 
 COPY *.go ./
 RUN CGO_ENABLED=0 GOOS=linux go build -o /server
+COPY ./.env /app/.env
 
 CMD ["/server"]
