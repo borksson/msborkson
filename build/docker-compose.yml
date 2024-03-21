@@ -36,10 +36,10 @@ services:
     build: ../server
     restart: always
     environment:
-      - PORT=8080
+      - PORT=8081
       - REGISTRY_URL=http://registry-backend:8001
     ports:
-      - "8080:8080"
+      - "8081:8081"
 
   # registry
   registry-frontend:
@@ -47,7 +47,7 @@ services:
     image: borksson/registry-frontend
     restart: always
     ports:
-      - "5173:3000"
+      - "3001:3000"
 
   registry-backend:
     container_name: registry-backend
