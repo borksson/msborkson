@@ -8,18 +8,18 @@ services:
   #   volumes:
   #     - ../apps/mongodb_data:/data/db
 
-  # # Postgres
-  # postgres-db:
-  #   container_name: postgres-db
-  #   image: postgres:latest
-  #   restart: always    
-  #   environment:
-  #     - POSTGRES-PASSWORD=/run/secrets/POSTGRES_PASSWORD
-  #     - POSTGRES-USER=borkson
-  #   volumes:
-  #     - ../apps/postgres_data:/var/lib/postgresql/data
-  #   secrets:
-  #     - POSTGRES_PASSWORD
+  # Postgres
+  postgres-db:
+    container_name: postgres-db
+    image: postgres:alpine
+    restart: always    
+    environment:
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: borkson
+    ports:
+      - "5432:5432"
+    volumes:
+      - ../apps/postgres_data:/var/lib/postgresql/data
 
   # # Selenium
   # chrome:
@@ -30,16 +30,17 @@ services:
   #   privileged: true
   #   shm-size: 2g
 
-  # # server
+  # server
   server:
     container_name: server
     build: ../server
     restart: always
     environment:
-      - PORT=8081
-      - REGISTRY_URL=http://registry-backend:8001
+      PORT: 8080
+      REGISTRY_URL: http://registry-backend:8000
+      UWATCH_URL: http://uwatch-backend:8000
     ports:
-      - "8081:8081"
+      - "8081:8080"
 
   # registry
   registry-frontend:
@@ -54,14 +55,23 @@ services:
     image: borksson/registry-backend
     restart: always
     environment:
-      - PORT=8001
-    ports:
-      - "8001:8001"
+      PORT: 8000
     volumes:
       - ../secrets:/usr/src/app/secrets
 
+  # uwatch
+  uwatch-frontend:
+    container_name: uwatch-frontend
+    image: borksson/uwatch-frontend
+    restart: always
+    ports:
+      - "3002:3000"
 
-secrets:
-  # Postgres
-  POSTGRES_PASSWORD:
-    file: ../secrets/postgres-password.txt
+  uwatch-backend:
+    container_name: uwatch-backend
+    image: borksson/uwatch-backend
+    restart: always
+    environment:
+      PORT: 8000
+      DATABASE_URL: ${DATABASE_URL}
+      TMDB_API_KEY: ${TMDB_API_KEY} #/run/secrets/TMDB_API_KEY

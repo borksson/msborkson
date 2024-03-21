@@ -41,6 +41,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	registry_url, err := url.Parse(os.Getenv("REGISTRY_URL"))
+	uwatch_url, err := url.Parse(os.Getenv("UWATCH_URL"))
 	if err != nil {
 		panic(err)
 	}
@@ -57,6 +58,10 @@ func main() {
 
 	r.Any("/registry/*proxyPath", func(c *gin.Context) {
 		proxy(c, registry_url)
+	})
+
+	r.Any("/uwatch/*proxyPath", func(c *gin.Context) {
+		proxy(c, uwatch_url)
 	})
 
 	r.Run(":" + port)
